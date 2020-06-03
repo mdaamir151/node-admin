@@ -1,0 +1,6 @@
+<table id="content-table" data-editable="false">
+{{#each data}}
+<tr><th>Table Name</th><th>Key</th>{{#each columns}}<th>{{this}}</th>{{/each}}</tr>
+<tr><td>{{table_name}}</td><td>{{key}}</td>{{#each column_desc}}<td>{{{this}}}</td>{{/each}}</tr>
+{{/each}}
+</table>
