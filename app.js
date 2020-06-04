@@ -153,7 +153,7 @@ app.post('/update/:table', (req, res)=>{
 
   let keys = Object.keys(data.values)
   for(let i=0; i<keys.length; ++i) {
-    if (!(keys[i] in columns) || !columns[keys[i]].update) {
+    if (!(keys[i] in columns) || !columns[keys[i]].update || !columns[keys[i]].accessible) {
       res.status(403).end()
       return
     }

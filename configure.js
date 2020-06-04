@@ -37,7 +37,7 @@ conn.getTables().then(tables => {
     const pk = []
     const uk = []
     description.forEach(row => {
-      columns[row.Field] = { accessible: true, update: true, delete: false, slug: row.Field, type: row.Type, default_value: row.Default }
+      columns[row.Field] = { accessible: true, update: true, slug: row.Field, type: row.Type, default_value: row.Default }
       if (row.Key && row.Key === 'PRI') pk.push(row.Field)
       if (row.Key && row.Key === 'UNI') uk.push(row.Field)
     })
