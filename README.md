@@ -12,3 +12,10 @@ Admin Panel for Express
 5. run admin server
 > node server.js
 6. Browse to http:localhost:\<port\>/
+
+## Restricting Access and updates to database
+Configuration file can be found under scripts/ directory
+set appropriate flags on table and columns
+Supported Flags are:
+- accessible \- true/false to show and enable or hide and disable column
+- update \- true to allow update, false to disallow
