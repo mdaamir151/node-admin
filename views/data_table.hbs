@@ -1,9 +1,19 @@
-<div id="nav-bar">
-  <div id="logo">Admin</div>
-</div>
 <div id="main-content">
-  <div id="content-header">Header</div>
+  <div id="content-header">{{title}}</div>
   <div id="content-data">
        {{> (resolve_partial __table_name) }}
   </div>
+</div>
+
+<div id="page-links-container">
+    {{#if showPrev}}<a href="/table/{{__table_name}}?page={{prevPage}}&pageSize={{pageSize}}" id="page-prev">Prev</a>{{/if}}
+  <table id="page-links">
+    <tr>
+    {{#each pages}}
+    <td id="page-{{this}}" class="pageNo"><a href="/table/{{../__table_name}}?page={{this}}&pageSize={{pageSize}}"><span>{{this}}</span></a></td>
+    {{/each}}
+    {{#if showNext}}<td><a href="/table/{{__table_name}}?page={{nextPage}}&pageSize={{pageSize}}" id="page-next">Next</a></td>{{/if}}
+  </tr>
+  </table>
+  <script>document.getElementById("page-{{currentPage}}").classList.add("current-page")</script>
 </div>

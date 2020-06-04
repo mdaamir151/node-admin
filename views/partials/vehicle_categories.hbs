@@ -1,0 +1,4 @@
+<table id="content-table" data-key="id" data-update_rows="true" data-table="vehicle_categories">
+<tr><th>#</th><th>id</th><th>category</th><th>image_path</th></tr>
+{{#each data}}<tr><td>{{increment @index}}</td><td data-update="true" data-col="id" data-dtype="int"><span>{{id}}</span></td><td data-update="true" data-col="category" data-dtype="varchar(25)"><span>{{category}}</span></td><td data-update="true" data-col="image_path" data-dtype="varchar(10)"><span>{{image_path}}</span></td></tr>{{/each}}
+</table>

@@ -26,7 +26,24 @@ class DBPool {
     const that = this
     return new Promise((resolve, reject)=>{
       that.pool.query(queryStr, null, (err, results)=>{
-        if (err) reject(err)
+        if (err) {
+          err.message = err.sqlMessage
+          reject(err)
+        }
+        else resolve(results)
+      })
+    })
+  }
+
+  countRows(table) {
+    const queryStr = `SELECT COUNT(*) AS numRows FROM ${table}`
+    const that = this
+    return new Promise((resolve, reject)=>{
+      that.pool.query(queryStr, null, (err, results)=>{
+        if (err) {
+          err.message = err.sqlMessage
+          reject(err)
+        }
         else resolve(results)
       })
     })
@@ -37,7 +54,10 @@ class DBPool {
     const that = this
     return new Promise((resolve, reject)=>{
       that.pool.query(queryStr, null, (err, results)=>{
-        if (err) reject(err)
+        if (err) {
+          err.message = err.sqlMessage
+          reject(err)
+        }
         else resolve(results.map(v=>Object.values(v)[0]))
       })
     })
@@ -48,7 +68,28 @@ class DBPool {
     const that = this
     return new Promise((resolve, reject)=>{
       that.pool.query(queryStr, null, (err, results)=>{
-        if (err) reject(err)
+        if (err) {
+          err.message = err.sqlMessage
+          reject(err)
+        }
+        else resolve(results)
+      })
+    })
+  }
+
+  update(tableName, values, key) {
+    let arr = Object.entries(values).map(([k,v])=>k + " = " + this.pool.escape(v))
+    let valStr = arr.join(', ')
+    arr = Object.entries(key).map(([k,v])=>k + " = " + this.pool.escape(v))
+    let conditions = arr.join(' AND ')
+    const queryStr = `UPDATE ${tableName} SET ${valStr} WHERE ${conditions}`
+    const that = this
+    return new Promise((resolve, reject)=>{
+      that.pool.query(queryStr, null, (err, results)=>{
+        if (err) {
+          err.message = err.sqlMessage //TODO: unable to assign to err.message
+          reject(err)
+        }
         else resolve(results)
       })
     })

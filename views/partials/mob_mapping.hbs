@@ -1,0 +1,4 @@
+<table id="content-table" data-key="source_number" data-update_rows="true" data-table="mob_mapping">
+<tr><th>#</th><th>source_number</th><th>target_number</th></tr>
+{{#each data}}<tr><td>{{increment @index}}</td><td data-update="true" data-col="source_number" data-dtype="varchar(15)"><span>{{source_number}}</span></td><td data-update="true" data-col="target_number" data-dtype="varchar(15)"><span>{{target_number}}</span></td></tr>{{/each}}
+</table>

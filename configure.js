@@ -37,12 +37,12 @@ conn.getTables().then(tables => {
   tableDescriptions.forEach(description => {
     iter++
     const tableName = allTables[iter]
-    tables[tableName] = { accessible: true, editable: true, slug: tableName }
+    tables[tableName] = { accessible: true, update_rows: true, insert_rows: false, delete_rows: false, slug: tableName }
     const columns = {}
     const pk = []
     const uk = []
     description.forEach(row => {
-      columns[row.Field] = { accessible: true, editable: true, slug: row.Field, type: row.Type, default_value: row.Default }
+      columns[row.Field] = { accessible: true, update: true, delete: false, slug: row.Field, type: row.Type, default_value: row.Default }
       if (row.Key && row.Key === 'PRI') pk.push(row.Field)
       if (row.Key && row.Key === 'UNI') uk.push(row.Field)
     })

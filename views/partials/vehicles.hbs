@@ -1,0 +1,4 @@
+<table id="content-table" data-key="vehicle_number" data-update_rows="true" data-table="vehicles">
+<tr><th>#</th><th>vehicle_number</th><th>vehicle</th><th>verified</th><th>owner</th><th>creation_timestamp</th><th>verification_timestamp</th></tr>
+{{#each data}}<tr><td>{{increment @index}}</td><td data-update="true" data-col="vehicle_number" data-dtype="varchar(30)"><span>{{vehicle_number}}</span></td><td data-update="true" data-col="vehicle" data-dtype="varchar(30)"><span>{{vehicle}}</span></td><td data-update="true" data-col="verified" data-dtype="tinyint(1)"><span>{{verified}}</span></td><td data-update="true" data-col="owner" data-dtype="int"><span>{{owner}}</span></td><td data-update="true" data-col="creation_timestamp" data-dtype="bigint"><span>{{creation_timestamp}}</span></td><td data-update="true" data-col="verification_timestamp" data-dtype="bigint"><span>{{verification_timestamp}}</span></td></tr>{{/each}}
+</table>
