@@ -1,20 +1,15 @@
 const fs = require('fs')
 const db = require('./dbcon/main')
 const path = require('path')
-
-if (process.argv.length < 3) {
-  throw Error('Config file is required to proceed')
-}
-const confFilePath = process.argv[2]
-const config = fs.readFileSync(confFilePath, 'utf-8')
-const confJson = JSON.parse(config)
+const extConfig = require('./external/config/main')
 
 const dbOptions = {
-  user: confJson.user,
-  password: confJson.password,
-  database: confJson.database,
-  host: confJson.host,
-  port: confJson.port,
+  dbType: extConfig.dbType,
+  user: extConfig.user,
+  password: extConfig.password,
+  database: extConfig.database,
+  host: extConfig.host,
+  port: extConfig.port,
   onError: function (err) {
     throw err
   }

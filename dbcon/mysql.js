@@ -26,10 +26,7 @@ class DBPool {
     const that = this
     return new Promise((resolve, reject)=>{
       that.pool.query(queryStr, null, (err, results)=>{
-        if (err) {
-          err.message = err.sqlMessage
-          reject(err)
-        }
+        if (err) reject({message: err.sqlMessage, stack: err})
         else resolve(results)
       })
     })
@@ -40,10 +37,7 @@ class DBPool {
     const that = this
     return new Promise((resolve, reject)=>{
       that.pool.query(queryStr, null, (err, results)=>{
-        if (err) {
-          err.message = err.sqlMessage
-          reject(err)
-        }
+        if (err) reject({message: err.sqlMessage, stack: err})
         else resolve(results)
       })
     })
@@ -56,7 +50,7 @@ class DBPool {
       that.pool.query(queryStr, null, (err, results)=>{
         if (err) {
           err.message = err.sqlMessage
-          reject(err)
+          reject({message: err.sqlMessage, stack: err})
         }
         else resolve(results.map(v=>Object.values(v)[0]))
       })
@@ -68,10 +62,7 @@ class DBPool {
     const that = this
     return new Promise((resolve, reject)=>{
       that.pool.query(queryStr, null, (err, results)=>{
-        if (err) {
-          err.message = err.sqlMessage
-          reject(err)
-        }
+        if (err) reject({message: err.sqlMessage, stack: err})
         else resolve(results)
       })
     })
@@ -86,10 +77,17 @@ class DBPool {
     const that = this
     return new Promise((resolve, reject)=>{
       that.pool.query(queryStr, null, (err, results)=>{
-        if (err) {
-          err.message = err.sqlMessage //TODO: unable to assign to err.message
-          reject(err)
-        }
+        if (err) reject({message: err.sqlMessage, stack: err})
+        else resolve(results)
+      })
+    })
+  }
+
+  rawQuery(queryStr) {
+    const that = this
+    return new Promise((resolve, reject)=>{
+      that.pool.query(queryStr, null, (err, results)=>{
+        if (err) reject({message: err.sqlMessage, stack: err})
         else resolve(results)
       })
     })

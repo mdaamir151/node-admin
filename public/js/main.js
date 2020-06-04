@@ -88,7 +88,7 @@ $(() => {
       data: data,
       contentType: 'application/json',
       dataType: 'json'
-    }).done(function(){
+    }).done(function(reply){
       uploadingData = false
       $(that).prop('disabled', false)
       for (let i = 0; i < selectedEl.length; ++i) {
@@ -98,6 +98,7 @@ $(() => {
       resetTable()
     }).fail(function (xhr, status, error) {
       console.log(error)
+      console.log(status)
       uploadingData = false
       $(that).prop('disabled', false)
       for (let i = 0; i < selectedEl.length; ++i) {

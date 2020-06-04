@@ -70,6 +70,12 @@ generatePartials = function() {
   initializeViewEngine()
 }
 
+const promisify = function(tableName, values, key, connection, fn) {
+  return new Promise((resolve, reject)=>{
+    fn(tableName, values, key, connection, resolve, reject)
+  })
+}
+
 const dbOptions = {
   user: config.user,
   password: config.password,
@@ -78,7 +84,7 @@ const dbOptions = {
   port: config.port,
 }
 
-const conn = db.getDB('mysql', dbOptions)
+const conn = db.getDB(config.dbType, dbOptions)
 
 app.use(express.static('./public'))
 const limiter = rateLimit({
@@ -125,8 +131,10 @@ app.get('/table/:table', (req, res)=>{
     let pages = Array.from({length: (high - low + 1)}).map((_,i)=>low+i)
     res.render('data_table', {__table_name: req.params.table, title: config.tables[req.params.table].slug, pageSize, showPrev, prevPage, showNext, nextPage, pages, currentPage, data})
   }).catch(err=>{
-    console.log(err)
-    res.status(500).end()
+    console.error(err)
+    let statusCode = err.statusCode || 500
+    if (err.message) res.status(statusCode).send(err.message)
+    else res.status(statusCode).end()
   })
 })
 
@@ -137,12 +145,6 @@ app.post('/update/:table', (req, res)=>{
   }
   let data = req.body
   let table = req.params.table
-  let update = true
-  if (script.beforeUpdate) {
-    if (!script.beforeUpdate(table, data)) {
-      update = false
-    }
-  }
   if (!config.tables[table].update_rows) {
     res.status(403).end()
     return
@@ -156,19 +158,21 @@ app.post('/update/:table', (req, res)=>{
       return
     }
   }
-  
-  if (update) {
-    conn.update(table, data.values, data.key).then(_=>{
-      res.send(data)
-    }).catch(err=>{
-      console.log(err)
-      if (err.message) res.status(405).send(err.message)
-      else res.status(500).end()
-    })
-  } else {
-    if (data.message) res.status(405).send(data.message)
-    else res.status(405).end()
-  }
+
+  promisify(req.params.table, data.values, data.key, conn, script.preUpdate)
+  .then(({tableName, values, key})=>{
+    return promisify(tableName, values, key, conn, script.update)
+  }).then(({tableName, values, key})=>{
+    return promisify(tableName, values, key, conn, script.postUpdate)
+  }).then(result=>{
+    let statusCode = result.statusCode || 200
+    res.status(statusCode).send(result.data)
+  }).catch(err=>{
+    console.error(err)
+    let statusCode = err.statusCode || 405
+    if (err.message) res.status(statusCode).send(err.message)
+    else res.status(statusCode).end()
+  })
 })
 
 app.get('/*', (req, res)=>{
@@ -179,7 +183,7 @@ app.post('/*', (req, res)=>{
   res.status(404).end()
 })
 
-init = function() {
+const init = function() {
   generatePartials()
   return app
 }

@@ -1,4 +1,5 @@
 module.exports = {
+  "dbType": "mysql",
   "user": "root",
   "password": "md*#aamir",
   "database": "deporter",
@@ -7,7 +8,7 @@ module.exports = {
   "tables": {
     "allowed_vehicles": {
       "accessible": true,
-      "update_rows": false,
+      "update_rows": true,
       "insert_rows": false,
       "delete_rows": false,
       "slug": "allowed_vehicles",
@@ -90,7 +91,7 @@ module.exports = {
         },
         "amount": {
           "accessible": true,
-          "update": false,
+          "update": true,
           "delete": false,
           "slug": "amount",
           "type": "int",
