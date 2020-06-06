@@ -1,0 +1,4 @@
+<table id="content-table" data-key="" data-update_rows="true" data-delete_rows="false" data-insert_rows="false" data-table="test">
+<tr><th data-col="serial-no" data-insert="false">#</th><th data-insert="true" data-allow_update="true" data-col="id" data-dtype="number" data-default="null" data-nullable="true">id</th><th data-insert="true" data-allow_update="true" data-col="roll" data-dtype="number" data-default="null" data-nullable="true">roll</th></tr>
+{{#each data}}<tr><td class="dt-number" class="serial-no">{{increment @index}}</td><td data-update="true" data-col="id" data-dtype="number" class="dt-number"><span>{{id}}</span></td><td data-update="true" data-col="roll" data-dtype="number" class="dt-number"><span>{{roll}}</span></td></tr>{{/each}}
+</table>

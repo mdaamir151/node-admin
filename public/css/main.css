@@ -30,7 +30,7 @@ body {
   font-size: 18px;
 }
 #main-content{
-  margin: 20px;
+  margin: 10px;
 }
 
 #content-data{
@@ -39,7 +39,8 @@ body {
 
 #content-header{
   font-size: 20px;
-  padding: 0 20px 20px 20px;
+  max-width: 60%;
+  overflow-x: auto;
 }
 
 #content-table tr th, #root-table tr th {
@@ -149,23 +150,44 @@ a#page-prev, a#page-next {
   background-color: #cafde8;
   box-sizing: border-box;
 }
+.edit-box:focus{
+  background: #88ff88;
+  outline: none;
+}
 .edit-box:disabled{
   background-color: #a6e2f9;
 }
 
-#save-button {
-  padding: 8px 15px;
-  color: white;
-  text-decoration: none;
-  margin-left: auto;
-  margin-right: 20px;
-  font-weight: bold;
-  background-color: green;
-  display: none;
-  outline: none;
-  border-radius: 2px;
-  border: none;
-}
-#save-button:disabled {
+#save-button:disabled, #add-button:disabled, #delete-button:disabled{
   background-color: grey;
+}
+.dt-number, .dt-unixtimestamp, .dt-boolean {
+  text-align: center;
+}
+#header-row{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  min-height: 35px
+}
+#add-button, #delete-button, #save-button{
+  padding: 8px 15px;
+  background-color: green;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  outline: none;
+  margin: 0px 2px;
+  display: none;
+}
+
+#delete-button{
+  background-color: #ca3030;
+}
+
+#content-table tr td.not-null input{
+  background-color: #ffc0bb;
 }

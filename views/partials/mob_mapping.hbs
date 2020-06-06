@@ -1,4 +1,4 @@
-<table id="content-table" data-key="source_number" data-update_rows="true" data-table="mob_mapping">
-<tr><th>#</th><th>source_number</th><th>target_number</th></tr>
-{{#each data}}<tr><td>{{increment @index}}</td><td data-update="true" data-col="source_number" data-dtype="varchar(15)"><span>{{source_number}}</span></td><td data-update="true" data-col="target_number" data-dtype="varchar(15)"><span>{{target_number}}</span></td></tr>{{/each}}
+<table id="content-table" data-key="source_number" data-update_rows="true" data-delete_rows="false" data-insert_rows="false" data-table="mob_mapping">
+<tr><th data-col="serial-no" data-insert="false">#</th><th data-insert="true" data-allow_update="true" data-col="source_number" data-dtype="text" data-default="null" data-nullable="false">source_number</th><th data-insert="true" data-allow_update="true" data-col="target_number" data-dtype="text" data-default="null" data-nullable="false">target_number</th></tr>
+{{#each data}}<tr><td class="dt-number" class="serial-no">{{increment @index}}</td><td data-update="true" data-col="source_number" data-dtype="text" class="dt-text"><span>{{source_number}}</span></td><td data-update="true" data-col="target_number" data-dtype="text" class="dt-text"><span>{{target_number}}</span></td></tr>{{/each}}
 </table>

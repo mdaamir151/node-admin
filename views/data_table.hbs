@@ -1,5 +1,6 @@
 <div id="main-content">
-  <div id="content-header">{{title}}</div>
+  <div id="header-row"><div id="content-header">{{title}}</div><div><button id="add-button">Add</button><button id="delete-button">Delete</button>
+  <button id="save-button">Save</button></div></div>
   <div id="content-data">
        {{> (resolve_partial __table_name) }}
   </div>

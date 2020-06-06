@@ -1,4 +1,4 @@
-<table id="content-table" data-key="id" data-update_rows="true" data-table="vehicle_categories">
-<tr><th>#</th><th>id</th><th>category</th><th>image_path</th></tr>
-{{#each data}}<tr><td>{{increment @index}}</td><td data-update="true" data-col="id" data-dtype="int"><span>{{id}}</span></td><td data-update="true" data-col="category" data-dtype="varchar(25)"><span>{{category}}</span></td><td data-update="true" data-col="image_path" data-dtype="varchar(10)"><span>{{image_path}}</span></td></tr>{{/each}}
+<table id="content-table" data-key="id" data-update_rows="true" data-delete_rows="false" data-insert_rows="false" data-table="vehicle_categories">
+<tr><th data-col="serial-no" data-insert="false">#</th><th data-insert="true" data-allow_update="true" data-col="id" data-dtype="number" data-default="null" data-nullable="false">id</th><th data-insert="true" data-allow_update="true" data-col="category" data-dtype="text" data-default="null" data-nullable="false">category</th><th data-insert="true" data-allow_update="true" data-col="image_path" data-dtype="text" data-default="null" data-nullable="true">image_path</th></tr>
+{{#each data}}<tr><td class="dt-number" class="serial-no">{{increment @index}}</td><td data-update="true" data-col="id" data-dtype="number" class="dt-number"><span>{{id}}</span></td><td data-update="true" data-col="category" data-dtype="text" class="dt-text"><span>{{category}}</span></td><td data-update="true" data-col="image_path" data-dtype="text" class="dt-text"><span>{{image_path}}</span></td></tr>{{/each}}
 </table>

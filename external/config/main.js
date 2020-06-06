@@ -4,5 +4,6 @@ module.exports = {
   password: "md*#aamir",
   database: "deporter",
   host: "localhost",
-  port: 3306
+  port: 3306,
+  serverPort: 5000
 }
