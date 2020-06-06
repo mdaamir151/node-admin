@@ -9,7 +9,7 @@ Admin Panel for Express
 3. set up database credentials in external/config/main
 4. run admin server
 > npm start
-5. Browse to http://localhost:\<serverPort in config file (default: 5000)>/  
+5. Browse to http://localhost: \<serverPort in config file (default: 5000)\>/  
 
 To re generate configuration file for database at any time
 > node configure.js
@@ -28,3 +28,5 @@ At column level supported flags are:
 - accessible \- true/false to show and enable or hide and disable column
 - update \- true to allow updating colum, false to disallow
 - insert \- true to allow setting colum value during insert, false to disallow
+
+External scripts can be placed in external/ directory to allow data manipulation during generation of configuration file or during database operations like select or fetch, update, insert and delete
