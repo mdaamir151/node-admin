@@ -6,6 +6,7 @@ $(() => {
   let _key = {}
   let _uploadingData = false
   let _dateTimeFormat = null
+  let _newRow = null
   const _table = $('#content-table')
   const _keyStr = _table.data('key')
   let _tempKeys = []
@@ -15,6 +16,7 @@ $(() => {
   const _tableInsertRowAllowed = _table.data('insert_rows') || false
   const _tableDeleteRowAllowed = _table.data('delete_rows') || false
   const _tableUpdateRowAllowed = _table.data('update_rows') || false
+  let _mode = '' // selection or //addition
   if (settings) {
     _dateTimeFormat = `${settings.datePickerSettings.dateFormat}${settings.datePickerSettings.dateTimeSeparator}${settings.datePickerSettings.timeFormat}`
   }
@@ -37,9 +39,10 @@ $(() => {
 
   if (settings) formatDates()
 
-  $('#content-table tr').not(':first').dblclick(event => {
+  $('#content-table').on('dblclick', 'tr:not(:first-child)', event => {
     event.stopPropagation()
     if (_uploadingData) return
+    resetAdditionMode()
     if ($(event.currentTarget).hasClass('disabled')) {
       resetTable()
     } else {
@@ -61,6 +64,8 @@ $(() => {
 
   const resetTable = function () {
     if (_uploadingData) return
+    resetAdditionMode()
+    _mode = ''
     $('#content-table tr').removeClass('disabled')
     _tableUpdateRowAllowed && $('#save-button').css({ display: 'none' })
     _tableDeleteRowAllowed && $('#delete-button').css({ display: 'none' })
@@ -73,39 +78,37 @@ $(() => {
     _key = {}
   }
 
+  const resetAdditionMode = function() {
+    if (_newRow) $(_newRow).remove()
+    _newRow = null
+    $('#save-button').css({'display': 'none'})
+    _tableInsertRowAllowed && $('#add-button').css({'display': 'inline-block'})
+  }
+
   $('#save-button').click(function () {
     _uploadingData = true
     $(this).prop('disabled', true)
-    const changedVals = {}
-    for (let i = 0; i < _selectedEl.length; ++i) {
-      const input = _selectedEl[i]
-      let origVal = _originalValues[i]
-      $(input).prop('disabled', true)
-      const td = $(input).closest('td')
-      let val = $(input).val()
-      if (td.data('dtype') === 'boolean') {
-        val = getBoolean(val)
-        origVal = getBoolean(origVal)
-      }
-      if (val !== origVal) {
-        if (td.data('dtype') === 'unixtimestamp') {
-          val = new Date(val).getTime()
-        }
-        changedVals[td.data('col')] = val
-      }
-    }
-    if (Object.keys(changedVals).length === 0) {
+    let data = ''
+    const values = getUpdateValues()
+    let url = ''
+    if (Object.keys(values).length === 0) {
       alert('No change')
       _uploadingData = false
       $(this).prop('disabled', false)
       resetTable()
       return
     }
-    const data = JSON.stringify({ values: changedVals, key: _key })
+    if (_mode === 'selection') {
+      data = JSON.stringify({ values, key: _key })
+      url = `/update/${_tableName}`
+    } else if (_mode === 'addition') {
+      data = JSON.stringify({ values })
+      url = `/insert/${_tableName}`
+    }
     const that = $(this)
     $.ajax({
       type: 'POST',
-      url: `/update/${_tableName}`,
+      url: url,
       data: data,
       contentType: 'application/json',
       dataType: 'json'
@@ -114,8 +117,9 @@ $(() => {
       $(that).prop('disabled', false)
       for (let i = 0; i < _selectedEl.length; ++i) {
         const input = _selectedEl[i]
-        if ($(input).closest('td').data('col') in changedVals) $(input).closest('td').find('span').text($(input).val())
+        if ($(input).closest('td').data('col') in values) $(input).closest('td').find('span').text($(input).val())
       }
+      _newRow = null
       resetTable()
     }).fail(function (xhr, status, error) {
       console.error(error)
@@ -135,6 +139,28 @@ $(() => {
     if (ans) deleteRow(this)
     else resetTable()
   })
+
+  const getUpdateValues = function () {
+    const changedVals = {}
+    for (let i = 0; i < _selectedEl.length; ++i) {
+      const input = _selectedEl[i]
+      let origVal = _originalValues[i]
+      $(input).prop('disabled', true)
+      const td = $(input).closest('td')
+      let val = $(input).val()
+      if (td.data('dtype') === 'boolean') {
+        val = getBoolean(val)
+        origVal = getBoolean(origVal)
+      }
+      if (val !== origVal) {
+        if (td.data('dtype') === 'unixtimestamp') {
+          val = new Date(val).getTime()
+        }
+        changedVals[td.data('col')] = val
+      }
+    }
+    return changedVals
+  }
 
   const deleteRow = function (button) {
     const data = JSON.stringify({ key: _key })
@@ -173,6 +199,7 @@ $(() => {
   }
 
   const setRowSelected = function () {
+    _mode = 'selection'
     _tableUpdateRowAllowed && $('#save-button').css({ display: 'inline-block' })
     _tableInsertRowAllowed && $('#add-button').css({ display: 'none' })
     _tableDeleteRowAllowed && $('#delete-button').css({ display: 'inline-block' })
@@ -223,9 +250,22 @@ $(() => {
         activateCell(td)
       }
     })
-    console.log(tr)
     $('#content-table').find('tr:first').parent().append(tr)
     $('html, body').stop().animate({ scrollTop: $(tr).offset().top }, 500)
+    _mode = 'addition'
+    _newRow = tr
+    _tableInsertRowAllowed && $('#add-button').css({'display': 'none'})
+    _tableInsertRowAllowed && $('#save-button').css({'display': 'inline-block'})
+  })
+
+  $('th').click(function(){
+    let th = $(this)
+    let colName = th.data('col')
+    let sortOrder = th.data('sort')
+    if (_tableName && colName) {
+      if (sortOrder === 'asc') window.location = `/table/${_tableName}?sort_by=${colName}&sort_order=desc`
+      else window.location = `/table/${_tableName}?sort_by=${colName}&sort_order=asc`
+    }
   })
 
   const getBoolean = function (val) {

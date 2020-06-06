@@ -64,7 +64,7 @@ body {
   font-weight: bold;
 }
 
-table#content-table {
+table#content-table, table#root-table {
   border-collapse: collapse;
   min-width: 100%;
 }
@@ -190,4 +190,29 @@ a#page-prev, a#page-next {
 
 #content-table tr td.not-null input{
   background-color: #ffc0bb;
+}
+
+#content-table tr td.not-null input:focus{
+  background: #88ff88;
+  outline: none;
+}
+
+#content-table tr th div{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#content-table tr th div span{
+  padding: 0 12px;
+}
+
+#content-table tr th div span.caret{
+  font-size: 10px;
+}
+#content-table tr th{
+  cursor: pointer;
+}
+#content-table tr th.asc, #content-table tr th.desc{
+  background-color: #0288D1
 }

@@ -9,8 +9,8 @@ class DBInterface {
     else throw Error('DBs supported : ' + supportedDbs)
   }
 
-  select (table, start, pageSize, properties) {
-    return this.dbConn.select(table, start, pageSize, properties)
+  select (table, start, pageSize, properties, options) {
+    return this.dbConn.select(table, start, pageSize, properties, options)
   }
 
   countRows (table) {
@@ -28,6 +28,10 @@ class DBInterface {
 
   updateRow (tableName, values, key) {
     return this.dbConn.updateRow(tableName, values, key)
+  }
+
+  insertRow (tableName, values){
+    return this.dbConn.insertRow(tableName, values)
   }
 
   deleteRow (tableName, key) {

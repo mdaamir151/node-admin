@@ -8,6 +8,7 @@ const script = require('./scripts/tables/main')
 const bodyParser = require('body-parser')
 const compression = require('compression')
 const rateLimit = require('express-rate-limit')
+const cookieParser = require('cookie-parser')
 
 const dbOptions = {
   user: config.user,
@@ -29,6 +30,7 @@ app.use(limiter)
 app.use(compression())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
+app.use(cookieParser())
 
 const settingsSymLink = path.join(__dirname, 'config', 'settings.js')
 if (fs.existsSync(settingsSymLink)) fs.unlinkSync(settingsSymLink)
@@ -53,6 +55,9 @@ const initializeViewEngine = function () {
       },
       increment: function (num) {
         return num + 1
+      },
+      eq: function (str1, str2) {
+        return str1 === str2
       }
     }
   }))
@@ -77,7 +82,9 @@ const generatePartials = function () {
         let tdata = '<td class="dt-number" class="serial-no">{{increment @index}}</td>'
         Object.keys(tableProp.columns).forEach(colName => {
           const colProp = tableProp.columns[colName]
-          theader += `<th data-insert="${colProp.insert}" data-allow_update="${colProp.update}" data-col="${colName}" data-dtype="${colProp.type}" data-default="${colProp.default}" data-nullable="${colProp.nullable}">${colProp.slug}</th>`
+          let caretUp = '&#9650;'
+          let caretDown = '&#9660;'
+          theader += `<th data-insert="${colProp.insert}" data-allow_update="${colProp.update}" data-col="${colName}" data-dtype="${colProp.type}" data-default="${colProp.default}" data-nullable="${colProp.nullable}" {{#if (eq sort_col_asc "${colName}")}}class="asc" data-sort="asc"{{else if (eq sort_col_desc "${colName}")}}class="desc" data-sort="desc"{{/if}}><div><span>${colProp.slug}</span><span class="caret">{{#if (eq sort_col_desc "${colName}")}}${caretUp}{{else}}${caretDown}{{/if}}</span></div></th>`
           if (colProp.accessible) tdata += `<td data-update="${colProp.update}" data-col="${colName}" data-dtype="${colProp.type}" class="dt-${colProp.type}"><span>{{${colName}}}</span></td>`
         })
         const partial = `<table id="content-table" data-key="${tableProp.key}" data-update_rows="${tableProp.update_rows}" data-delete_rows="${tableProp.delete_rows}" data-insert_rows="${tableProp.insert_rows}" data-table="${tableName}">\n` +
@@ -98,10 +105,16 @@ const promisify = function (tableName, values, key, connection, fn) {
   })
 }
 
+const promisifyNoKey = function (tableName, values, connection, fn) {
+  return new Promise((resolve, reject) => {
+    fn(tableName, values, connection, resolve, reject)
+  })
+}
+
 app.get('/', (req, res) => {
   const data = []
   Object.values(config.tables).forEach(val => {
-    const row = { table_name: val.slug, key: val.key.join(','), columns: Object.values(val.columns).map(col => col.slug), column_desc: Object.values(val.columns).map(col => `<span>type: ${col.type}</span><span>default: ${col.default_value}</span>`) }
+    const row = { table_name: val.slug, key: val.key.join(','), columns: Object.values(val.columns).map(col => col.slug), column_desc: Object.values(val.columns).map(col => `<span>type: ${col.type}</span><span>default: ${col.default}</span>`) }
     data.push(row)
   })
   res.render('data_table', { __table_name: null, title: 'All tables under ' + config.database, data })
@@ -116,13 +129,29 @@ app.get('/table/:table', (req, res) => {
     res.status(400).end() // bad request
     return
   }
+  let sColName = req.query.sort_by
+  let sortOrder = req.query.sort_order
+  if (sColName && sortOrder){
+    res.cookie('sortOptions', `${req.params.table}--${sColName}--${sortOrder}`, {httpOnly: true, sameSite: 'Strict' })
+  } else {
+    let sortOptions = req.cookies.sortOptions
+    let sarr = []
+    if (sortOptions) sarr = sortOptions.split('--')
+    if (sarr.length >= 3 && sarr[0] === req.params.table) {
+      sColName = sarr[1]
+      sortOrder = sarr[2]
+    }
+  }
+  const selectOptions = {
+    sort: {column: sColName, order: sortOrder}
+  }
   const currentPage = req.query.page || 1
   let pageSize = req.query.pageSize || DEFAULT_PAGE_SIZE
   const pageOffset = (currentPage - 1) * pageSize
   pageSize = Math.min(pageSize, MAX_PAGE_SIZE)
   const accessibleProperties = Object.entries(config.tables[req.params.table].columns).filter(([colName, prop]) => prop.accessible === true).map(([colName, prop]) => colName)
   const rowsPromise = conn.countRows(req.params.table)
-  const dataPromise = conn.select(req.params.table, pageOffset, pageSize, accessibleProperties)
+  const dataPromise = conn.select(req.params.table, pageOffset, pageSize, accessibleProperties, selectOptions)
   Promise.all([rowsPromise, dataPromise]).then(([numRowsData, data]) => {
     const numRows = numRowsData[0].numRows
     const low = Math.floor((currentPage - 1) / PAGE_LINK_SIZE) * PAGE_LINK_SIZE + 1
@@ -138,7 +167,11 @@ app.get('/table/:table', (req, res) => {
     const columnsData = config.tables[req.params.table].columns
     Object.freeze(columnsData)
     script.onProcessTableRows(req.params.table, columnsData, data)
-    res.render('data_table', { __table_name: req.params.table, title: config.tables[req.params.table].slug, pageSize, showPrev, prevPage, showNext, nextPage, pages, currentPage, data })
+    let sort_col_asc = null
+    let sort_col_desc = null
+    if (sColName && sortOrder && sortOrder.toUpperCase() === 'ASC') sort_col_asc = sColName
+      else if (sColName && sortOrder && sortOrder.toUpperCase() === 'DESC') sort_col_desc = sColName
+    res.render('data_table', { __table_name: req.params.table, sort_col_asc, sort_col_desc, title: config.tables[req.params.table].slug, pageSize, showPrev, prevPage, showNext, nextPage, pages, currentPage, data })
   }).catch(err => {
     console.error(err)
     const statusCode = err.statusCode || 500
@@ -238,23 +271,23 @@ app.post('/delete/:table', (req, res) => {
     })
 })
 
-app.post('/add/:table', (req, res) => {
+app.post('/insert/:table', (req, res) => {
   if (!req.params.table) {
     res.status(400).end() // bad request
     return
   }
   const data = req.body
   const table = req.params.table
-  if (!config.tables[table].delete_rows) {
+  if (!config.tables[table].insert_rows) {
     res.status(403).end()
     return
   }
 
-  promisify(req.params.table, null, data.key, conn, script.preInsertRow)
-    .then(({ tableName, values, key }) => {
-      return promisify(tableName, values, key, conn, script.insertRow)
-    }).then(({ tableName, values, key }) => {
-      return promisify(tableName, values, key, conn, script.postInsertRow)
+  promisifyNoKey(req.params.table, data.values, conn, script.preInsertRow)
+    .then(({ tableName, values }) => {
+      return promisifyNoKey(tableName, values, conn, script.insertRow)
+    }).then(({ tableName, values }) => {
+      return promisifyNoKey(tableName, values, conn, script.postInsertRow)
     }).then(result => {
       const statusCode = result.statusCode || 200
       res.status(statusCode).send(result.data)

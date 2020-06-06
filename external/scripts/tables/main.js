@@ -72,18 +72,18 @@ const postDeleteRow = function (tableName, values, key, connection, resolve, rej
 }
 
 /*
-* resolve with {tableName: <affected table>, values: <value to be passed>, key: <key to be passed>} to be passed on to @update method
+* resolve with {tableName: <affected table>, values: <value to be passed>} to be passed on to @update method
 * reject with {statusCode: <default 405>, message: <string message>, stack: <error stack to print>}
 */
-const preInsertRow = function (tableName, values, key, connection, resolve, reject) {
+const preInsertRow = function (tableName, values, connection, resolve, reject) {
   // your code here
 }
 
 /*
-* resolve with {tableName: <affected table>, values: <value to be passed>, key: <key to be passed>} to be passed on to @postUpdate method
+* resolve with {tableName: <affected table>, values: <value to be passed>} to be passed on to @postUpdate method
 * reject with {statusCode: <default 405>, message: <string message>, stack: <error stack to print>}
 */
-const insertRow = function (tableName, values, key, connection, resolve, reject) {
+const insertRow = function (tableName, values, connection, resolve, reject) {
   // your code here
 }
 
@@ -91,7 +91,7 @@ const insertRow = function (tableName, values, key, connection, resolve, reject)
 * resolve with {statusCode: <default 200>, data: <json to be sent>}
 * reject with {statusCode: <default 405>, message: <string message>, stack: <error stack to print>}
 */
-const postInsertRow = function (tableName, values, key, connection, resolve, reject) {
+const postInsertRow = function (tableName, values, connection, resolve, reject) {
   // your code here
 }
 

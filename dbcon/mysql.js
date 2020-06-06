@@ -37,8 +37,17 @@ class DBPool {
     })
   }
 
-  select (table, start, pageSize, properties) {
-    const queryStr = `SELECT ${properties} FROM ${table} LIMIT ${start}, ${pageSize}`
+  select (table, start, pageSize, properties, options) {
+    let queryStr = `SELECT ${properties} FROM ${table} LIMIT ${start}, ${pageSize}`
+    if (options && options.sort && options.sort.column) {
+      let so = options.sort.order
+      let order = null
+      if (so && so.toUpperCase() === 'ASC') order = 'ASC'
+      else if (so && so.toUpperCase() === 'DESC') order = 'DESC'
+      if (order) {
+        queryStr = `SELECT ${properties} FROM ${table} ORDER BY ${options.sort.column} ${order} LIMIT ${start}, ${pageSize}`
+      }
+    }
     const that = this
     return new Promise((resolve, reject) => {
       that.pool.query(queryStr, null, (err, results) => {
@@ -95,6 +104,25 @@ class DBPool {
     arr = Object.entries(key).map(([k, v]) => k + ' = ' + this.pool.escape(v))
     const conditions = arr.join(' AND ')
     const queryStr = `UPDATE ${tableName} SET ${valStr} WHERE ${conditions}`
+    const that = this
+    return new Promise((resolve, reject) => {
+      that.pool.query(queryStr, null, (err, results) => {
+        if (err) reject({ message: err.sqlMessage, stack: err })
+        else resolve(results)
+      })
+    })
+  }
+
+  insertRow (tableName, values) {
+    const keyArr = []
+    const valueArr = []
+    Object.entries(values).forEach(([k,v])=>{
+      keyArr.push(this.pool.escape(k))
+      valueArr.push(this.pool.escape(v))
+    })
+    const cols = keyArr.join(', ').replace(/'/g, '')
+    const vals = valueArr.join(', ')
+    const queryStr = `INSERT INTO ${tableName}(${cols}) VALUES(${vals})`
     const that = this
     return new Promise((resolve, reject) => {
       that.pool.query(queryStr, null, (err, results) => {

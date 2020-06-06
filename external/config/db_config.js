@@ -11,7 +11,7 @@ module.exports = {
       accessible: true,
       update_rows: true,
       insert_rows: true,
-      delete_rows: false,
+      delete_rows: true,
       slug: 'allowed_vehicles',
       columns: {
         id: {

@@ -84,23 +84,23 @@ const postDeleteRow = function (tableName, values, key, connection, resolve, rej
 }
 
 /*
-* resolve with {tableName: <affected table>, values: <value to be passed>, key: <key to be passed>} to be passed on to @update method
+* resolve with {tableName: <affected table>, values: <value to be passed>} to be passed on to @update method
 * reject with {statusCode: <default 405>, message: <string message>, stack: <error stack to print>}
 */
-const preInsertRow = function (tableName, values, key, connection, resolve, reject) {
-  if (extScript.preInsertRow) extScript.preInsertRow(tableName, values, key, connection, resolve, reject)
-  else resolve({ tableName, values, key })
+const preInsertRow = function (tableName, values, connection, resolve, reject) {
+  if (extScript.preInsertRow) extScript.preInsertRow(tableName, values, connection, resolve, reject)
+  else resolve({ tableName, values })
 }
 
 /*
-* resolve with {tableName: <affected table>, values: <value to be passed>, key: <key to be passed>} to be passed on to @postUpdate method
+* resolve with {tableName: <affected table>, values: <value to be passed> } to be passed on to @postUpdate method
 * reject with {statusCode: <default 405>, message: <string message>, stack: <error stack to print>}
 */
-const insertRow = function (tableName, values, key, connection, resolve, reject) {
-  if (extScript.insertRow) extScript.insertRow(tableName, values, key, connection, resolve, reject)
+const insertRow = function (tableName, values, connection, resolve, reject) {
+  if (extScript.insertRow) extScript.insertRow(tableName, values, connection, resolve, reject)
   else {
-    connection.insertRow(tableName, key)
-      .then(result => resolve({ tableName, values, key }))
+    connection.insertRow(tableName, values)
+      .then(result => resolve({ tableName, values }))
       .catch(err => reject(err))
   }
 }
@@ -109,8 +109,8 @@ const insertRow = function (tableName, values, key, connection, resolve, reject)
 * resolve with {statusCode: <default 200>, data: <json to be sent>}
 * reject with {statusCode: <default 405>, message: <string message>, stack: <error stack to print>}
 */
-const postInsertRow = function (tableName, values, key, connection, resolve, reject) {
-  if (extScript.postInsertRow) extScript.postInsertRow(tableName, values, key, connection, resolve, reject)
+const postInsertRow = function (tableName, values, connection, resolve, reject) {
+  if (extScript.postInsertRow) extScript.postInsertRow(tableName, values, connection, resolve, reject)
   else resolve({ statusCode: 200, data: values })
 }
 
