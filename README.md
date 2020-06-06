@@ -15,8 +15,9 @@ To re generate configuration file for database at any time
 > node configure.js
 
 ## Restricting Access and updates to database
-Configuration file can be found under scripts/ directory.
-Set appropriate flags on table and columns.\
+Configuration file can be found under external/config/ directory. Place your databse credentials in external/config/main.js.
+Database configuration is written to db_config.js under same directory when you first run server or when first configuration file is generated as explained above.
+Set appropriate flags on table and columns in db_config.js.\
 Supported flags at table level are:
 - accessible \- true/false to show and enable or hide and disable table
 - insert_rows \- true to allow inserting new rows, false to disallow
@@ -29,4 +30,4 @@ At column level supported flags are:
 - update \- true to allow updating colum, false to disallow
 - insert \- true to allow setting colum value during insert, false to disallow
 
-External scripts can be placed in external/ directory to allow data manipulation during generation of configuration file or during database operations like select or fetch, update, insert and delete
+External scripts can be placed in external/scripts directory to allow data manipulation during generation of configuration file or during database operations like select or fetch, update, insert and delete
