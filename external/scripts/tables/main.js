@@ -14,10 +14,10 @@
 * modify data if needed before displaying to user, like transforming data according to types, adding new columns, etc.
 * columnData is read-only
 */
-const onProcessTableRows = function(tableName, columnData, data) {
-  data.forEach(row=>{
-    Object.entries(row).forEach(([columnName, val])=>{
-      if (columnData[columnName].type.startsWith('boolean')) row[columnName] = val > 0? true: false
+const onProcessTableRows = function (tableName, columnData, data) {
+  data.forEach(row => {
+    Object.entries(row).forEach(([columnName, val]) => {
+      if (columnData[columnName].type.startsWith('boolean')) row[columnName] = val > 0
       columnData[columnName] = 'testing'
     })
   })
@@ -27,7 +27,7 @@ const onProcessTableRows = function(tableName, columnData, data) {
 * resolve with {tableName: <affected table>, values: <value to be passed>, key: <key to be passed>} to be passed on to @update method
 * reject with {statusCode: <default 405>, message: <string message>, stack: <error stack to print>}
 */
-const preUpdate = function(tableName, values, key, connection, resolve, reject) {
+const preUpdate = function (tableName, values, key, connection, resolve, reject) {
   // your code here
 }
 
@@ -35,7 +35,7 @@ const preUpdate = function(tableName, values, key, connection, resolve, reject) 
 * resolve with {tableName: <affected table>, values: <value to be passed>, key: <key to be passed>} to be passed on to @postUpdate method
 * reject with {statusCode: <default 405>, message: <string message>, stack: <error stack to print>}
 */
-const update = function(tableName, values, key, connection, resolve, reject) {
+const update = function (tableName, values, key, connection, resolve, reject) {
   // your code here
 }
 
@@ -43,16 +43,15 @@ const update = function(tableName, values, key, connection, resolve, reject) {
 * resolve with {statusCode: <default 200>, data: <json to be sent>}
 * reject with {statusCode: <default 405>, message: <string message>, stack: <error stack to print>}
 */
-const postUpdate = function(tableName, values, key, connection, resolve, reject) {
+const postUpdate = function (tableName, values, key, connection, resolve, reject) {
   // your code here
 }
-
 
 /*
 * resolve with {tableName: <affected table>, values: <value to be passed>, key: <key to be passed>} to be passed on to @update method
 * reject with {statusCode: <default 405>, message: <string message>, stack: <error stack to print>}
 */
-const preDeleteRow = function(tableName, values, key, connection, resolve, reject) {
+const preDeleteRow = function (tableName, values, key, connection, resolve, reject) {
   // your code here
 }
 
@@ -60,7 +59,7 @@ const preDeleteRow = function(tableName, values, key, connection, resolve, rejec
 * resolve with {tableName: <affected table>, values: <value to be passed>, key: <key to be passed>} to be passed on to @postUpdate method
 * reject with {statusCode: <default 405>, message: <string message>, stack: <error stack to print>}
 */
-const deleteRow = function(tableName, values, key, connection, resolve, reject) {
+const deleteRow = function (tableName, values, key, connection, resolve, reject) {
   // your code here
 }
 
@@ -68,16 +67,15 @@ const deleteRow = function(tableName, values, key, connection, resolve, reject) 
 * resolve with {statusCode: <default 200>, data: <json to be sent>}
 * reject with {statusCode: <default 405>, message: <string message>, stack: <error stack to print>}
 */
-const postDeleteRow = function(tableName, values, key, connection, resolve, reject) {
+const postDeleteRow = function (tableName, values, key, connection, resolve, reject) {
   // your code here
 }
-
 
 /*
 * resolve with {tableName: <affected table>, values: <value to be passed>, key: <key to be passed>} to be passed on to @update method
 * reject with {statusCode: <default 405>, message: <string message>, stack: <error stack to print>}
 */
-const preInsertRow = function(tableName, values, key, connection, resolve, reject) {
+const preInsertRow = function (tableName, values, key, connection, resolve, reject) {
   // your code here
 }
 
@@ -85,7 +83,7 @@ const preInsertRow = function(tableName, values, key, connection, resolve, rejec
 * resolve with {tableName: <affected table>, values: <value to be passed>, key: <key to be passed>} to be passed on to @postUpdate method
 * reject with {statusCode: <default 405>, message: <string message>, stack: <error stack to print>}
 */
-const insertRow = function(tableName, values, key, connection, resolve, reject) {
+const insertRow = function (tableName, values, key, connection, resolve, reject) {
   // your code here
 }
 
@@ -93,10 +91,8 @@ const insertRow = function(tableName, values, key, connection, resolve, reject) 
 * resolve with {statusCode: <default 200>, data: <json to be sent>}
 * reject with {statusCode: <default 405>, message: <string message>, stack: <error stack to print>}
 */
-const postInsertRow = function(tableName, values, key, connection, resolve, reject) {
+const postInsertRow = function (tableName, values, key, connection, resolve, reject) {
   // your code here
 }
 
-
-
-module.exports = { onProcessTableRows, /*preUpdate,*/ /*update,*/ /*postUpdate,*/ /*preDeleteRow,*/ /*deleteRow,*/ /*postDeleteRow,*/ /*preInsertRow,*/ /*insertRow,*/ /*postInsertRow*/} //uncomment functions implemented
+module.exports = { onProcessTableRows /* preUpdate, */ /* update, */ /* postUpdate, */ /* preDeleteRow, */ /* deleteRow, */ /* postDeleteRow, */ /* preInsertRow, */ /* insertRow, */ /* postInsertRow */ } // uncomment functions implemented

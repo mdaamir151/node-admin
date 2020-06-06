@@ -1,44 +1,44 @@
-const mysql = require('./mysql')
+const Mysql = require('./mysql')
 
 const supportedDbs = ['mysql']
 
 class DBInterface {
   constructor (type, options) {
     if (!options) throw Error('options required for DB connection')
-    else if (type === 'mysql') this.dbConn =  new mysql(options)
+    else if (type === 'mysql') this.dbConn = new Mysql(options)
     else throw Error('DBs supported : ' + supportedDbs)
   }
 
-  select(table, start, pageSize, properties) {
+  select (table, start, pageSize, properties) {
     return this.dbConn.select(table, start, pageSize, properties)
   }
 
-  countRows(table) {
+  countRows (table) {
     return this.dbConn.countRows(table)
   }
 
-  getTables() {
+  getTables () {
     return this.dbConn.getTables()
   }
 
-  //tableData format: {Field, Type, Default, Null: true/false, Key}
-  describeTable(tableName) {
+  // tableData format: {Field, Type, Default, Null: true/false, Key}
+  describeTable (tableName) {
     return this.dbConn.describeTable(tableName)
   }
 
-  updateRow(tableName, values, key) {
+  updateRow (tableName, values, key) {
     return this.dbConn.updateRow(tableName, values, key)
   }
 
-  deleteRow(tableName, key) {
+  deleteRow (tableName, key) {
     return this.dbConn.deleteRow(tableName, key)
   }
 
-  rawQuery(queryStr) {
+  rawQuery (queryStr) {
     return this.dbConn.rawQuery(queryStr)
   }
 
-  getDataTypeMap() {
+  getDataTypeMap () {
     return this.dbConn.getDataTypeMap()
   }
 }

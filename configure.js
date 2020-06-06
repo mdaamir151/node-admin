@@ -4,8 +4,8 @@ const path = require('path')
 const scripts = require('./scripts/config/main')
 
 if (!fs.existsSync(path.join(__dirname, 'external', 'config', 'main.js'))) {
-    console.error('No database config file found. Aborting...')
-    process.exit()
+  console.error('No database config file found. Aborting...')
+  process.exit()
 }
 const extConfig = require('./external/config/main')
 
@@ -15,14 +15,14 @@ const dbOptions = {
   database: extConfig.database,
   host: extConfig.host,
   port: extConfig.port,
-  serverPort: extConfig.serverPort,
+  serverPort: extConfig.serverPort
 }
 
 const conn = new DBInterface(extConfig.dbType, dbOptions)
 const data = {}
-Object.assign(data, dbOptions, {dbType: extConfig.dbType})
+Object.assign(data, dbOptions, { dbType: extConfig.dbType })
 let allTables = []
-const configure = function(cb) {
+const configure = function (cb) {
   const dtypeMap = conn.getDataTypeMap() || {}
   conn.getTables().then(tables => {
     allTables = tables
@@ -53,10 +53,10 @@ const configure = function(cb) {
       else tables[tableName].key = uk
     })
     data.tables = tables
-    let outFile = path.join(__dirname, 'external', 'config', 'db_config.js')
+    const outFile = path.join(__dirname, 'external', 'config', 'db_config.js')
     scripts.onWriteConfigFile(data)
     fs.writeFileSync(outFile, 'module.exports = ' + JSON.stringify(data, null, 2))
-    let symLinkPath = path.join(__dirname, 'config', 'db_config.js')
+    const symLinkPath = path.join(__dirname, 'config', 'db_config.js')
     if (fs.existsSync(symLinkPath)) fs.unlinkSync(symLinkPath)
     fs.symlinkSync(outFile, symLinkPath)
     console.log('configuration file generated!')

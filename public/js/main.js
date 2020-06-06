@@ -21,7 +21,7 @@ $(() => {
 
   !_tableUpdateRowAllowed && $('#save-button').css({ display: 'none' })
   !_tableDeleteRowAllowed && $('#delete-button').css({ display: 'none' })
-  _tableInsertRowAllowed? $('#add-button').css({ display: 'inline-block' }): $('#add-button').css({ display: 'none' })
+  _tableInsertRowAllowed ? $('#add-button').css({ display: 'inline-block' }) : $('#add-button').css({ display: 'none' })
 
   const formatDates = function () {
     const inp = $('<input type="text" style="display: none">')
@@ -178,7 +178,7 @@ $(() => {
     _tableDeleteRowAllowed && $('#delete-button').css({ display: 'inline-block' })
   }
 
-  const activateCell = function(td) {
+  const activateCell = function (td) {
     let value = $(td).find('span').text()
     const col = $(td).data('col')
     const dtype = $(td).data('dtype')
@@ -210,15 +210,15 @@ $(() => {
       const update = $(this).data('allow_update')
       const type = $(this).data('dtype')
       let defaultVal = $(this).data('default')
-      let nullable = $(this).data('nullable')
-      if(type !== 'number') defaultVal =  defaultVal? defaultVal: ''
+      const nullable = $(this).data('nullable')
+      if (type !== 'number') defaultVal = defaultVal || ''
       if (colName === 'serial-no') {
-        let count = $('#content-table').find('tr:first').parent().children('tr').length
+        const count = $('#content-table').find('tr:first').parent().children('tr').length
         $(tr).append($(`<td data-update="false" data-col="${colName}" class="dt-number"><span>${count}</span></td>`))
       } else {
         let cls = `dt-${type}`
         if (!nullable) cls = cls + ' not-null'
-        let td = $(`<td data-update="${update}" data-col="${colName}" data-dtype="${type}" data-nullable="${nullable}" class="${cls}"><span>${defaultVal}</span></td>`)
+        const td = $(`<td data-update="${update}" data-col="${colName}" data-dtype="${type}" data-nullable="${nullable}" class="${cls}"><span>${defaultVal}</span></td>`)
         $(tr).append(td)
         activateCell(td)
       }
