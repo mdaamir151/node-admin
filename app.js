@@ -82,6 +82,7 @@ const generatePartials = function () {
         let tdata = '<td class="dt-number" class="serial-no">{{increment @index}}</td>'
         Object.keys(tableProp.columns).forEach(colName => {
           const colProp = tableProp.columns[colName]
+          if (!colProp.accessible) return
           let caretUp = '&#9650;'
           let caretDown = '&#9660;'
           theader += `<th data-insert="${colProp.insert}" data-allow_update="${colProp.update}" data-col="${colName}" data-dtype="${colProp.type}" data-default="${colProp.default}" data-nullable="${colProp.nullable}" {{#if (eq sort_col_asc "${colName}")}}class="asc" data-sort="asc"{{else if (eq sort_col_desc "${colName}")}}class="desc" data-sort="desc"{{/if}}><div><span>${colProp.slug}</span><span class="caret">{{#if (eq sort_col_desc "${colName}")}}${caretUp}{{else}}${caretDown}{{/if}}</span></div></th>`
