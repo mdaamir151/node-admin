@@ -48,7 +48,7 @@ $(() => {
     } else {
       $('#content-table tr').not(event.currentTarget).addClass('disabled')
       if (!isStateValid()) return
-      setRowSelected()
+      setRowSelected(event.currentTarget)
       if (!_tableUpdateRowAllowed) return
       $(event.currentTarget).children('td').each(function (index) {
         const update = $(this).data('update')
@@ -198,8 +198,13 @@ $(() => {
     return true
   }
 
-  const setRowSelected = function () {
+  const setRowSelected = function (tr) {
     _mode = 'selection'
+    $(tr).children('td').each(function(){
+      let col = $(this).data('col')
+      let val = $(this).find('span').text()
+      if (col && _keyArr.includes(col)) _key[col] = val
+    })
     _tableUpdateRowAllowed && $('#save-button').css({ display: 'inline-block' })
     _tableInsertRowAllowed && $('#add-button').css({ display: 'none' })
     _tableDeleteRowAllowed && $('#delete-button').css({ display: 'inline-block' })
@@ -207,11 +212,9 @@ $(() => {
 
   const activateCell = function (td) {
     let value = $(td).find('span').text()
-    const col = $(td).data('col')
     const dtype = $(td).data('dtype')
     let type = 'text'
     if (!dtype) return
-    if (col && _keyArr.includes(col)) _key[col] = value
     if (dtype === 'number') type = 'number'
     let input = $(`<input type="${type}" value="${value}" class="edit-box">`)
     if (dtype === 'unixtimestamp' && settings) {
