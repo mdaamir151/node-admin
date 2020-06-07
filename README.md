@@ -16,11 +16,11 @@ To re generate configuration file for database at any time
 
 ## Insert/delete/update in table
 **Add** button for insert operation is shown if **insert_rows** flag is set for table. **Delete** button is shown on double clicking a row if **delete_rows** flag is set for the table.
-To edit values in a row double click on the row. Editable fields will be highlighted. Date/Time picker (http://t1m0n.name/air-datepicker/docs/) opens up for fields having **dtype="unixtimestamp"**, true/false dropdown is provided for fields with **dtype="boolean"**. If you are storing a timestamp field as int or bigint or equivalent number type, just rename its dtype to '**unixtimestamp**' in configuration file(**external/config/db_config.js**) generated for your database. Similarly boolean equivalent fields may be re-named as '**boolean**' to convert values into equivalent javascript boolean values. Boolean of a value is automatically calculated as:
+To edit values in a row double click on the row. Editable fields will be highlighted. Date/Time picker (http://t1m0n.name/air-datepicker/docs/) opens up for fields having **type="unixtimestamp"**, true/false dropdown is provided for fields with **type="boolean"**. If you are storing a timestamp field as int or bigint or equivalent number type, just rename its type to **unixtimestamp** in configuration file(**external/config/db_config.js**) generated for your database. Similarly boolean equivalent fields may be re-named as **boolean** to convert values into equivalent javascript boolean values. Boolean of a value is automatically calculated as:
 > boolean_of_val = !(!val || val === 'false')
 
 It should be noted that boolean values are passed to database as true/false when being saved. Conversion if needed can be done through **external/scripts/table/main.js**.  
-**dtype** can also be set using script **external/scripts/config/main.js**.
+**type** can also be set using script **external/scripts/config/main.js**.
 
 ## Restricting Access and updates to database
 Configuration file can be found under **external/config/** directory. Place your databse credentials in **external/config/main.js**.
